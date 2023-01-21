@@ -103,7 +103,13 @@ class Dealer {
      * @param color
      */
     countVehiclesWithColor(color) {
-
+        return new Promise((resolve) => {
+            console.log('Counting vehicles...')
+            setTimeout(() => {
+                const vehiclesOfColor = this.vehicles.filter(vehicle => vehicle.color === color);
+                resolve(vehiclesOfColor.length);
+            }, 1000);
+        });
     }
 }
 
@@ -263,6 +269,10 @@ addVehicle(trucks, dealer)
     })
     .then(soldTruck => {
         console.log(`Truck with VIN: ${soldTruck.vin} has been sold`);
+        return dealer.countVehiclesWithColor('Yellow');
+    })
+    .then(count => {
+        console.log(`Number of vehicles with color Yellow: ${count}`);
     })
     .catch(error => {
         console.log(error.message);
