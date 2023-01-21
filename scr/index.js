@@ -56,8 +56,17 @@ class Dealer {
      * Если Vehicle с указанным vin нет в массиве #vehicles, то выбрасывает сообщение об ошибке
      * @param vin
      */
-    sellVehicle(vin) {
+    async sellVehicle(vin) {
+        if (typeof vin !== 'number') {
+            throw new Error('VIN must be a number');
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
+        const foundVehicleIndex = this.#vehicles.findIndex(v => v.vin === vin);
+        if (foundVehicleIndex === -1) {
+            throw new Error(`Vehicle with VIN ${vin} not found in the dealership`);
+        }
+        return this.#vehicles.splice(foundVehicleIndex, 1)[0];
     }
 
     /***
