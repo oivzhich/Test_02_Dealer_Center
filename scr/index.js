@@ -21,7 +21,11 @@ class Dealer {
     }
 
     get vehicles() {
-        return this.#vehicles;
+        let vehilesVins = "";
+        this.#vehicles.forEach(vehile => {
+            vehilesVins += `${vehile.vin} `
+        })
+        return vehilesVins.trim();
     }
 
     set vehicles(value) {
@@ -37,8 +41,17 @@ class Dealer {
      * Иначе добавляет Vehicle в массив #vehicles
      * @param vehicle
      */
-    addVehicle(vehicle) {
-
+    async addVehicle(vehicle) {
+        if (!(vehicle instanceof Vehicle)) {
+            throw new Error('Invalid vehicle object');
+        }
+        const foundVehicle = this.#vehicles.find(v => v.vin === vehicle.vin);
+        if (foundVehicle) {
+            throw new Error(`Vehicle with VIN ${vehicle.vin} already exists in the dealership`);
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        this.#vehicles.push(vehicle);
+        return true;
     }
 
 
@@ -196,8 +209,32 @@ const dealer = new Dealer(DATABASE.dealer.title);
 
 console.log(`Dealer name: ${dealer.title}`);
 
+// каждый элемент массива из тестовой базы данных переводим в экземпляр класса Bus. Сохраняем полученный массив в переменную buses
 const buses = DATABASE.buses.map(bus => {
-    return new Bus(bus.vin, bus.color, bus.maxPassengers); // каждый элемент массива из тестовой базы данных переводим в экземпляр класса Bus. Сохраняем полученный массив в переменную buses
+    return new Bus(bus.vin, bus.color, bus.maxPassengers);
+});
+
+// каждый элемент массива из тестовой базы данных переводим в экземпляр класса Truck. Сохраняем полученный массив в переменную trucks
+const trucks = DATABASE.trucks.map(truck => {
+    return new Truck(truck.vin, truck.color, truck.carryWeight);
 });
 
 console.log(`Amount of buses: ${buses.length}`);
+console.log(`Amount of trucks: ${trucks.length}`);
+
+console.log(`Amount of vehicles at dealer: ${dealer.vehicles.length}`);
+
+dealer.addVehicle(buses[0]).then(() => {
+    console.log(`Vehicle ${buses[0].vin} added to dealer`);
+    console.log(`Amount of vehicles at diller: ${dealer.vehicles.length}`); // should include the 'bus' object
+}).catch(error => console.log(error.message)).then(() => {
+    dealer.addVehicle(buses[0]).then(() => {
+        console.log(`Vehicle ${buses[0].vin} added to dealer`);
+        console.log(`Amount of vehicles at diler: ${dealer.vehicles.length}`); // should include the 'bus' object
+    }).catch(error => {
+        console.log("Error!")
+        console.log(error.message)
+    });
+}).then(() => {
+
+})
