@@ -94,7 +94,18 @@ class Dealer {
      * @param color
      */
     paintBus(vin, color) {
-
+        return new Promise((resolve, reject) => {
+            console.log('Painting bus...');
+            setTimeout(() => {
+                const bus = this.vehicles.find(vehicle => vehicle.vin === vin && vehicle instanceof Bus);
+                if (!bus) {
+                    reject(new Error(`No bus with VIN: ${vin} found in the dealership`));
+                } else {
+                    bus.color = color;
+                    resolve(bus);
+                }
+            }, 1000);
+        });
     }
 
     /***
@@ -269,10 +280,14 @@ addVehicle(trucks, dealer)
     })
     .then(soldTruck => {
         console.log(`Truck with VIN: ${soldTruck.vin} has been sold`);
-        return dealer.countVehiclesWithColor('Yellow');
+        return dealer.countVehiclesWithColor('Green');
     })
     .then(count => {
-        console.log(`Number of vehicles with color Yellow: ${count}`);
+        console.log(`Number of vehicles with color Green: ${count}`);
+        return dealer.paintBus(6543, 'Red')
+    })
+    .then(bus => {
+        console.log(`Bus with VIN: ${bus.vin} has been painted to ${bus.color}`);
     })
     .catch(error => {
         console.log(error.message);
