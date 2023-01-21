@@ -1,3 +1,162 @@
+class Dealer {
+    // название дилерского центра
+    #title;
+    // массив Vehicle, выставленных в дилерском центре
+    #vehicles;
+
+    constructor(title) {
+        this.#title = title;
+        this.#vehicles = [];
+    }
+
+    get title() {
+        return this.#title;
+    }
+
+    set title(value) {
+        if (typeof value !== 'string') {
+            throw new Error('Title must be a string');
+        }
+        this.#title = value;
+    }
+
+    get vehicles() {
+        return this.#vehicles;
+    }
+
+    set vehicles(value) {
+        if (!Array.isArray(value) || !value.every(v => v instanceof Vehicle)) {
+            throw new Error('Invalid vehicles array');
+        }
+        this.#vehicles = value;
+    }
+
+    /***
+     * метод, который добавляет Vehicle в дилерский центр.
+     * Если Vehicle с таким vin шуже есть в базе, то выбрасывает сообщение об ошибке.
+     * Иначе добавляет Vehicle в массив #vehicles
+     * @param vehicle
+     */
+    addVehicle(vehicle) {
+
+    }
+
+
+    /***
+     * метод, который продает Vehicle с указанным vin из дилерского центра (продажа = удалить из массива #vehicles).
+     * Если Vehicle с указанным vin нет в массиве #vehicles, то выбрасывает сообщение об ошибке
+     * @param vin
+     */
+    sellVehicle(vin) {
+
+    }
+
+    /***
+     * метод, который в массиве #vehicles ищет Truck с указанным числом carryWeight и цветом color.
+     * Возвращает найденный экзмепляр класса Truck либо выбрасывает сообщение об ошибке если такого Truck нет в массиве #vehicles
+     * @param carryWeight
+     * @param color
+     */
+    findTruck(carryWeight, color) {
+
+    }
+
+    /***
+     * метод, который выполняет перекрашивание экземпляра класса Bus с указанным числом vin в указанный цвет color.
+     * Если такого Bus в массиве #vehicles нет, то выдает сообщение об ошибке. Иначе меняет цвет на указанный
+     * @param vin
+     * @param color
+     */
+    paintBus(vin, color) {
+
+    }
+
+    /***
+     * метод, который считает кол-во автомобилей Vehicle с указанным цветом color.
+     * Если ни одного автомобиля данного цвета не найдено, возвращает число 0. Иначе возвращает кол-во автомобилей.
+     * @param color
+     */
+    countVehiclesWithColor(color) {
+
+    }
+}
+
+class Vehicle {
+    #vin;
+    #color;
+
+    constructor(vin, color) {
+        this.#vin = vin;
+        this.#color = color;
+    }
+
+
+    get vin() {
+        return this.#vin;
+    }
+
+    set vin(value) {
+        if (typeof value !== 'number') {
+            throw new Error('VIN must be a number');
+        }
+        this.#vin = value;
+    }
+
+    get color() {
+        return this.#color;
+    }
+
+    set color(value) {
+        if (typeof value !== 'string') {
+            throw new Error('Color must be a string');
+        }
+
+        this.#color = value;
+    }
+}
+
+class Bus extends Vehicle {
+    #maxPassengers
+
+    constructor(vin, color, maxPassengers) {
+        super(vin, color);
+        this.#maxPassengers = maxPassengers;
+    }
+
+
+    get maxPassengers() {
+        return this.#maxPassengers;
+    }
+
+    set maxPassengers(value) {
+        if (typeof value !== 'number') {
+            throw new Error('maxPassengers must be a number');
+        }
+        this.#maxPassengers = value;
+    }
+}
+
+class Truck extends Vehicle {
+    #carryWeight;
+
+    constructor(vin, color, carryWeight) {
+        super(vin, color);
+        this.#carryWeight = carryWeight;
+    }
+
+
+    get carryWeight() {
+        return this.#carryWeight;
+    }
+
+    set carryWeight(value) {
+        if (typeof value !== 'number') {
+            throw new Error('Carry weight must be a number');
+        }
+        this.#carryWeight = value;
+    }
+}
+
 const DATABASE = {
     dealer: {
         title: 'Trucks & Buses Vilnius LTD'
@@ -33,4 +192,12 @@ const DATABASE = {
     ]
 }
 
-console.log(DATABASE)
+const dealer = new Dealer(DATABASE.dealer.title);
+
+console.log(`Dealer name: ${dealer.title}`);
+
+const buses = DATABASE.buses.map(bus => {
+    return new Bus(bus.vin, bus.color, bus.maxPassengers); // каждый элемент массива из тестовой базы данных переводим в экземпляр класса Bus. Сохраняем полученный массив в переменную buses
+});
+
+console.log(`Amount of buses: ${buses.length}`);
