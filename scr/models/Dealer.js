@@ -5,11 +5,19 @@ class Dealer {
     // массив Vehicle, выставленных в дилерском центре
     #vehicles: Array<Vehicle>
 
+    constructor(title) {
+        this.#title = title;
+        this.#vehicles = [];
+    }
+
     get title(): string {
         return this.#title;
     }
 
     set title(value: string) {
+        if (typeof value !== 'string') {
+            throw new Error('Title must be a string');
+        }
         this.#title = value;
     }
 
@@ -18,6 +26,9 @@ class Dealer {
     }
 
     set vehicles(value: Array<Vehicle>) {
+        if (!Array.isArray(value) || !value.every(v => v instanceof Vehicle)) {
+            throw new Error('Invalid vehicles array');
+        }
         this.#vehicles = value;
     }
 
