@@ -21,11 +21,7 @@ class Dealer {
     }
 
     get vehicles() {
-        let vehilesVins = "";
-        this.#vehicles.forEach(vehile => {
-            vehilesVins += `${vehile.vin} `
-        })
-        return vehilesVins.trim();
+        return this.#vehicles
     }
 
     set vehicles(value) {
@@ -227,14 +223,23 @@ console.log(`Amount of vehicles at dealer: ${dealer.vehicles.length}`);
 dealer.addVehicle(buses[0]).then(() => {
     console.log(`Vehicle ${buses[0].vin} added to dealer`);
     console.log(`Amount of vehicles at diller: ${dealer.vehicles.length}`); // should include the 'bus' object
-}).catch(error => console.log(error.message)).then(() => {
-    dealer.addVehicle(buses[0]).then(() => {
-        console.log(`Vehicle ${buses[0].vin} added to dealer`);
-        console.log(`Amount of vehicles at diler: ${dealer.vehicles.length}`); // should include the 'bus' object
-    }).catch(error => {
-        console.log("Error!")
-        console.log(error.message)
-    });
-}).then(() => {
-
 })
+    .catch(error => console.log(error.message))
+    .then(() => {
+        dealer.addVehicle(trucks[0]).then(() => {
+            console.log(`Vehicle ${buses[0].vin} added to dealer`);
+            console.log(`Amount of vehicles at diler: ${dealer.vehicles.length}`); // should include the 'bus' object
+        }).catch(error => {
+            console.log("Error!")
+            console.log(error.message)
+        })
+            .then(() => {
+                dealer.addVehicle(buses[1]).then(() => {
+                    console.log(`Vehicle ${buses[1].vin} added to dealer`);
+                    console.log(`Amount of vehicles at diler: ${dealer.vehicles.length}`); // should include the 'bus' object
+                }).catch(error => {
+                    console.log("Error!")
+                    console.log(error.message)
+                });
+            });
+    })
