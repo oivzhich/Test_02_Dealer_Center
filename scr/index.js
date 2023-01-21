@@ -248,14 +248,22 @@ async function addVehicle(vehiclesArray, dealerObject) {
     }
 }
 
-addVehicle(trucks, dealer).then(() => {
-    addVehicle(buses, dealer).then(() => {
-        dealer.findTruck(10, 'Red').then(result => {
-            const truckVin = result.vin;
-            console.log(`Truck with vin ${truckVin} successfully found`);
-            dealer.sellVehicle(truckVin).then((soldTruck) => {
-                console.log(`Truck with VIN=${soldTruck.vin} is sold successfully`)
-            }).catch(error => console.log(error.message));
-        }).catch(error => console.log(error.message));
+addVehicle(trucks, dealer)
+    .then(() => {
+        console.log("Trucks have been successfully added to the dealership")
+        return addVehicle(buses, dealer);
     })
-})
+    .then(() => {
+        console.log("Buses have been successfully added to the dealership")
+        return dealer.findTruck(10, 'Red');
+    })
+    .then(truck => {
+        console.log("Truck found: ", truck.vin);
+        return dealer.sellVehicle(truck.vin)
+    })
+    .then(soldTruck => {
+        console.log(`Truck with VIN: ${soldTruck.vin} has been sold`);
+    })
+    .catch(error => {
+        console.log(error.message);
+    });
