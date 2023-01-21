@@ -35,7 +35,7 @@ class Dealer {
      * метод, который добавляет Vehicle в дилерский центр.
      * Если Vehicle с таким vin шуже есть в базе, то выбрасывает сообщение об ошибке.
      * Иначе добавляет Vehicle в массив #vehicles
-     * @param vehicle: Vehicle
+     * @param vehicle: boolean
      */
     async addVehicle(vehicle) {
         if (!(vehicle instanceof Vehicle)) {
@@ -271,23 +271,35 @@ addVehicle(trucks, dealer)
         return addVehicle(buses, dealer);
     })
     .then(() => {
-        console.log("Buses have been successfully added to the dealership")
+        console.log("Buses have been successfully added to the dealership\n")
         return dealer.findTruck(10, 'Red');
     })
     .then(truck => {
-        console.log("Truck found: ", truck.vin);
+        console.log(`Truck found: ${truck.vin}\n`);
         return dealer.sellVehicle(truck.vin)
     })
     .then(soldTruck => {
-        console.log(`Truck with VIN: ${soldTruck.vin} has been sold`);
-        return dealer.countVehiclesWithColor('Green');
+        console.log(`Truck with VIN: ${soldTruck.vin} has been sold\n`);
+        return dealer.countVehiclesWithColor('Yellow');
     })
     .then(count => {
-        console.log(`Number of vehicles with color Green: ${count}`);
+        console.log(`Number of vehicles with color Yellow: ${count}\n`);
         return dealer.paintBus(6543, 'Red')
     })
     .then(bus => {
-        console.log(`Bus with VIN: ${bus.vin} has been painted to ${bus.color}`);
+        console.log(`Bus with VIN: ${bus.vin} has been painted to ${bus.color}\n`);
+        return dealer.countVehiclesWithColor('Yellow');
+    })
+    .then(count => {
+        console.log(`Number of vehicles with color Yellow: ${count}\n`);
+        return dealer.addVehicle(new Truck(12345, 'Yellow', 1200));
+    })
+    .then(() => {
+        console.log(`Truck was successfully added\n`);
+        return dealer.countVehiclesWithColor('Yellow');
+    })
+    .then(count => {
+        console.log(`Number of vehicles with color Yellow: ${count}\n`);
     })
     .catch(error => {
         console.log(error.message);
