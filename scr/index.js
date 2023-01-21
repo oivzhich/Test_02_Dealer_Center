@@ -37,18 +37,21 @@ class Dealer {
      * Иначе добавляет Vehicle в массив #vehicles
      * @param vehicle: boolean
      */
-    async addVehicle(vehicle) {
+    addVehicle(vehicle) {
         if (!(vehicle instanceof Vehicle)) {
             throw new Error('Invalid vehicle object');
         }
         console.log(`Adding vehicle ${vehicle.vin}...`)
-        await new Promise(resolve => setTimeout(resolve, 500));
-        const foundVehicle = this.#vehicles.find(v => v.vin === vehicle.vin);
-        if (foundVehicle) {
-            throw new Error(`Vehicle with VIN ${vehicle.vin} already exists in the dealership`);
-        }
-        this.#vehicles.push(vehicle);
-        return true;
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (this.vehicles.findIndex(v => v.vin === vehicle.vin) !== -1) {
+                    reject(new Error(`A vehicle with VIN: ${vehicle.vin} already exists in the dealership`));
+                } else {
+                    this.vehicles.push(vehicle);
+                    resolve(true);
+                }
+            }, 1000);
+        });
     }
 
 
@@ -57,18 +60,22 @@ class Dealer {
      * Если Vehicle с указанным vin нет в массиве #vehicles, то выбрасывает сообщение об ошибке
      * @param vin: Vehicle
      */
-    async sellVehicle(vin) {
+    sellVehicle(vin) {
         if (typeof vin !== 'number') {
             throw new Error('VIN must be a number');
         }
         console.log(`Selling truck ${vin}...`)
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        const foundVehicleIndex = this.#vehicles.findIndex(v => v.vin === vin);
-        if (foundVehicleIndex === -1) {
-            throw new Error(`Vehicle with VIN ${vin} not found in the dealership`);
-        }
-        return this.#vehicles.splice(foundVehicleIndex, 1)[0];
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const vehicleIndex = this.vehicles.findIndex(vehicle => vehicle.vin === vin);
+                if (vehicleIndex === -1) {
+                    reject(new Error(`No vehicle with VIN: ${vin} found in the dealership`));
+                } else {
+                    const soldVehicle = this.vehicles.splice(vehicleIndex, 1)[0];
+                    resolve(soldVehicle);
+                }
+            }, 1000);
+        });
     }
 
     /***
@@ -77,14 +84,22 @@ class Dealer {
      * @param carryWeight
      * @param color
      */
-    async findTruck(carryWeight, color) {
+    findTruck(carryWeight, color) {
         console.log('Searching for truck...')
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const foundTruck = this.#vehicles.find(v => v instanceof Truck && v.carryWeight === carryWeight && v.color === color);
-        if (!foundTruck) {
-            throw new Error(`Truck with carryWeight ${carryWeight} and color ${color} not found in the dealership`);
-        }
-        return foundTruck;
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const truck = this.vehicles.find(vehicle =>
+                    vehicle instanceof Truck &&
+                    vehicle.carryWeight === carryWeight &&
+                    vehicle.color === color
+                );
+                if (!truck) {
+                    reject(new Error(`No truck with carry weight of ${carryWeight} and color ${color} found in the dealership`));
+                } else {
+                    resolve(truck);
+                }
+            }, 1000);
+        });
     }
 
     /***
