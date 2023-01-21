@@ -76,8 +76,14 @@ class Dealer {
      * @param carryWeight
      * @param color
      */
-    findTruck(carryWeight, color) {
-
+    async findTruck(carryWeight, color) {
+        console.log('Searching for truck...')
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const foundTruck = this.#vehicles.find(v => v instanceof Truck && v.carryWeight === carryWeight && v.color === color);
+        if (!foundTruck) {
+            throw new Error(`Truck with carryWeight ${carryWeight} and color ${color} not found in the dealership`);
+        }
+        return foundTruck;
     }
 
     /***
@@ -234,13 +240,19 @@ async function addVehicle(vehiclesArray, dealerObject) {
     for (let vehicle of vehiclesArray) {
         try {
             await dealerObject.addVehicle(vehicle);
-            console.log(`Successfully added vehicle with VIN ${vehicle.vin} to dealership`);
+            console.log(`Successfully added vehicle with VIN ${vehicle.vin} to dealership\n`);
         } catch (error) {
             console.log(error.message);
         }
     }
 }
 
-addVehicle(buses, dealer).then(() => {
-    addVehicle(trucks, dealer);
+addVehicle(trucks, dealer).then(() => {
+    addVehicle(buses, dealer).then(() => {
+        dealer.findTruck(10, 'Red').then(result => {
+            const truckVin = result.vin;
+            console.log(`Truck with vin ${truckVin} sucessfully found`);
+        })
+            .catch(error => console.log(error.message));
+    })
 })
