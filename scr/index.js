@@ -35,17 +35,18 @@ class Dealer {
      * метод, который добавляет Vehicle в дилерский центр.
      * Если Vehicle с таким vin шуже есть в базе, то выбрасывает сообщение об ошибке.
      * Иначе добавляет Vehicle в массив #vehicles
-     * @param vehicle
+     * @param vehicle: Vehicle
      */
     async addVehicle(vehicle) {
         if (!(vehicle instanceof Vehicle)) {
             throw new Error('Invalid vehicle object');
         }
+        console.log(`Adding vehicle ${vehicle.vin}...`)
+        await new Promise(resolve => setTimeout(resolve, 3000));
         const foundVehicle = this.#vehicles.find(v => v.vin === vehicle.vin);
         if (foundVehicle) {
             throw new Error(`Vehicle with VIN ${vehicle.vin} already exists in the dealership`);
         }
-        await new Promise(resolve => setTimeout(resolve, 1000));
         this.#vehicles.push(vehicle);
         return true;
     }
@@ -229,26 +230,17 @@ console.log(`Amount of trucks: ${trucks.length}`);
 
 console.log(`Amount of vehicles at dealer: ${dealer.vehicles.length}`);
 
-dealer.addVehicle(buses[0]).then(() => {
-    console.log(`Vehicle ${buses[0].vin} added to dealer`);
-    console.log(`Amount of vehicles at diller: ${dealer.vehicles.length}`); // should include the 'bus' object
+async function addVehicle(vehiclesArray, dealerObject) {
+    for (let vehicle of vehiclesArray) {
+        try {
+            await dealerObject.addVehicle(vehicle);
+            console.log(`Successfully added vehicle with VIN ${vehicle.vin} to dealership`);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+}
+
+addVehicle(buses, dealer).then(() => {
+    addVehicle(trucks, dealer);
 })
-    .catch(error => console.log(error.message))
-    .then(() => {
-        dealer.addVehicle(trucks[0]).then(() => {
-            console.log(`Vehicle ${buses[0].vin} added to dealer`);
-            console.log(`Amount of vehicles at diler: ${dealer.vehicles.length}`); // should include the 'bus' object
-        }).catch(error => {
-            console.log("Error!")
-            console.log(error.message)
-        })
-            .then(() => {
-                dealer.addVehicle(buses[1]).then(() => {
-                    console.log(`Vehicle ${buses[1].vin} added to dealer`);
-                    console.log(`Amount of vehicles at diler: ${dealer.vehicles.length}`); // should include the 'bus' object
-                }).catch(error => {
-                    console.log("Error!")
-                    console.log(error.message)
-                });
-            });
-    })
