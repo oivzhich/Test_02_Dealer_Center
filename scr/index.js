@@ -42,7 +42,7 @@ class Dealer {
             throw new Error('Invalid vehicle object');
         }
         console.log(`Adding vehicle ${vehicle.vin}...`)
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 500));
         const foundVehicle = this.#vehicles.find(v => v.vin === vehicle.vin);
         if (foundVehicle) {
             throw new Error(`Vehicle with VIN ${vehicle.vin} already exists in the dealership`);
@@ -55,12 +55,13 @@ class Dealer {
     /***
      * метод, который продает Vehicle с указанным vin из дилерского центра (продажа = удалить из массива #vehicles).
      * Если Vehicle с указанным vin нет в массиве #vehicles, то выбрасывает сообщение об ошибке
-     * @param vin
+     * @param vin: Vehicle
      */
     async sellVehicle(vin) {
         if (typeof vin !== 'number') {
             throw new Error('VIN must be a number');
         }
+        console.log(`Selling truck ${vin}...`)
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         const foundVehicleIndex = this.#vehicles.findIndex(v => v.vin === vin);
@@ -251,8 +252,10 @@ addVehicle(trucks, dealer).then(() => {
     addVehicle(buses, dealer).then(() => {
         dealer.findTruck(10, 'Red').then(result => {
             const truckVin = result.vin;
-            console.log(`Truck with vin ${truckVin} sucessfully found`);
-        })
-            .catch(error => console.log(error.message));
+            console.log(`Truck with vin ${truckVin} successfully found`);
+            dealer.sellVehicle(truckVin).then((soldTruck) => {
+                console.log(`Truck with VIN=${soldTruck.vin} is sold successfully`)
+            }).catch(error => console.log(error.message));
+        }).catch(error => console.log(error.message));
     })
 })
