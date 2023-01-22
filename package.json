@@ -1,5 +1,6 @@
 {
   "name": "test_02_dealer_center",
+  "type": "module",
   "version": "1.0.0",
   "description": "Dealer Center",
   "main": "index.js",
